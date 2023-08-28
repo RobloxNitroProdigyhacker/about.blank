@@ -6,17 +6,17 @@
     <title>Live Chat</title>
     <style>
         body {
-            font-family: 'Canva Sans', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f2f2f2;
+            background-color: #111111;
         }
         .chat-container {
-            background-color: #333333;
+            background-color: #1a1a1a;
             color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
@@ -25,7 +25,7 @@
             padding: 20px;
         }
         .chat-box {
-            background-color: #222222;
+            background-color: #1a1a1a;
             border-radius: 5px;
             padding: 10px;
             height: 300px;
@@ -37,14 +37,15 @@
             border-radius: 5px;
             max-width: 80%;
             font-size: 14px;
+            font-weight: bold;
         }
         .user-message {
             align-self: flex-end;
-            background-color: #444444;
+            background-color: #1f1f1f;
         }
         .bot-message {
             align-self: flex-start;
-            background-color: #555555;
+            background-color: #1f1f1f;
         }
         .message-box {
             display: flex;
@@ -53,9 +54,9 @@
         #messageInput {
             flex: 1;
             padding: 10px;
-            border: 1px solid #777777;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #444444;
+            background-color: #111111;
             color: #ffffff;
         }
         #sendButton {
@@ -65,16 +66,29 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.5s;
+        }
+        #themeToggle {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        #themeToggle label {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
+        <h1 id="welcome">Welcome To the School Live Chat</h1>
         <div class="chat-box" id="chatBox"></div>
         <div class="message-box">
             <input type="text" id="messageInput" placeholder="Send a message">
             <button id="sendButton">Send</button>
+        </div>
+        <div id="themeToggle">
+            <label for="toggle">Dark Theme</label>
+            <input type="checkbox" id="toggle">
         </div>
     </div>
 
@@ -82,20 +96,30 @@
         const chatBox = document.getElementById('chatBox');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
+        const themeToggle = document.getElementById('toggle');
+        const welcomeMessage = document.getElementById('welcome');
         let canSendMessage = true;
+        let darkTheme = true;
 
-        function appendMessage(message, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.innerText = message;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
 
-        function simulateBotResponse(userMessage) {
-            const botResponse = `You said: "${userMessage}"`;
-            appendMessage(botResponse, 'bot');
-        }
+        themeToggle.addEventListener('change', function() {
+            if (darkTheme) {
+                welcomeMessage.textContent = "Welcome To the Light School Live Chat";
+                document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+            } else {
+                welcomeMessage.textContent = "Welcome To the Dark School Live Chat";
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+            }
+            darkTheme = !darkTheme;
+        });
 
         function sendMessage() {
             if (!canSendMessage) {
@@ -114,14 +138,19 @@
             }
         }
 
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
+        function simulateBotResponse(userMessage) {
+            // Simulate a bot response (replace with actual logic)
+            const botResponse = `You said: "${userMessage}"`;
+            appendMessage(botResponse, 'bot');
+        }
 
-        appendMessage('Welcome To the School Live chat', 'bot');
+        function appendMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender + '-message');
+            messageDiv.innerText = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     </script>
 </body>
 </html>
