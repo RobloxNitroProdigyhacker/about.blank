@@ -139,6 +139,28 @@
             messageDiv.innerText = message;
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat</title>
+</head>
+<body>
+    <script>
+        function saveChat(message) {
+            const savedChat = localStorage.getItem('savedChat') || '';
+            localStorage.setItem('savedChat', savedChat + '\n' + message);
+        }
+
+        // Example of saving a chat message
+        const messageToSave = "This is a test message.";
+        saveChat(messageToSave);
+
+        // Retrieve the saved chat messages
+        const savedChat = localStorage.getItem('savedChat');
+        console.log(savedChat);
         }
 
         usernameInput.addEventListener('change', function() {
