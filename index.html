@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f2f2f2;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.5s;
         }
         .chat-container {
             background-color: #ffffff;
@@ -23,6 +23,7 @@
             width: 100%;
             max-width: 600px;
             padding: 20px;
+            transition: background-color 0.5s;
         }
         .chat-box {
             background-color: #f2f2f2;
@@ -68,24 +69,45 @@
             margin-top: 10px;
             display: flex;
             align-items: center;
-            cursor: pointer;
         }
         #themeToggle label {
             margin-right: 10px;
+            cursor: pointer;
+        }
+        #welcomeMessage {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #rulesList {
+            margin-top: 20px;
+        }
+        .dark-theme {
+            background-color: #333333;
+            color: #ffffff;
+        }
+        .dark-theme .chat-container {
+            background-color: #444444;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-box" id="chatBox"></div>
+        <div id="welcomeMessage">Welcome to the School Live Chat</div>
+        <div id="chatBox" class="chat-box"></div>
         <div class="message-box">
             <input type="text" id="messageInput" placeholder="Send a message">
             <button id="sendButton">Send</button>
         </div>
-        <div id="themeToggle" onclick="toggleTheme()">
-            <label for="toggle" id="themeLabel">Dark Theme</label>
+        <div id="themeToggle">
+            <label for="toggle" id="toggleLabel">Dark Theme</label>
             <input type="checkbox" id="toggle">
         </div>
+        <ul id="rulesList">
+            <li>Be respectful to others</li>
+            <li>No spamming or self-promotion</li>
+            <li>Keep discussions school-related</li>
+        </ul>
     </div>
 
     <script>
@@ -93,8 +115,9 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const themeToggle = document.getElementById('toggle');
-        const themeLabel = document.getElementById('themeLabel');
+        const toggleLabel = document.getElementById('toggleLabel');
         let canSendMessage = true;
+        let isFirstTime = true;
 
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keyup', function(event) {
@@ -103,7 +126,10 @@
             }
         });
 
-        themeToggle.addEventListener('change', toggleTheme);
+        themeToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-theme', this.checked);
+            toggleLabel.innerText = this.checked ? 'Light Theme' : 'Dark Theme';
+        });
 
         function sendMessage() {
             if (!canSendMessage) {
@@ -112,6 +138,10 @@
 
             const message = messageInput.value.trim();
             if (message !== '') {
+                if (isFirstTime) {
+                    appendMessage('Welcome to the School Live Chat', 'bot');
+                    isFirstTime = false;
+                }
                 appendMessage(message, 'user');
                 messageInput.value = '';
                 canSendMessage = false;
@@ -135,17 +165,6 @@
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        // Function to toggle between dark and light themes
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            if (document.body.classList.contains('dark-theme')) {
-                themeLabel.innerText = 'Light Theme';
-            } else {
-                themeLabel.innerText = 'Dark Theme';
-            }
-        }
     </script>
 </body>
 </html>
-
