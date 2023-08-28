@@ -51,6 +51,15 @@
             display: flex;
             margin-top: 10px;
         }
+        #usernameInput {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #111111;
+            color: #ffffff;
+            width: 100%;
+            max-width: 150px;
+        }
         #messageInput {
             flex: 1;
             padding: 10px;
@@ -74,6 +83,7 @@
         <h1 id="welcome">Welcome To the School Live Chat</h1>
         <div class="chat-box" id="chatBox"></div>
         <div class="message-box">
+            <input type="text" id="usernameInput" placeholder="Your Username">
             <input type="text" id="messageInput" placeholder="Send a message">
             <button id="sendButton">Send</button>
         </div>
@@ -81,10 +91,12 @@
 
     <script>
         const chatBox = document.getElementById('chatBox');
+        const usernameInput = document.getElementById('usernameInput');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const welcomeMessage = document.getElementById('welcome');
         let canSendMessage = true;
+        let username = '';
 
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keyup', function(event) {
@@ -98,9 +110,14 @@
                 return;
             }
 
+            if (!username) {
+                alert('Please enter a username.');
+                return;
+            }
+
             const message = messageInput.value.trim();
             if (message !== '') {
-                appendMessage(message, 'user');
+                appendMessage(username + ': ' + message, 'user');
                 messageInput.value = '';
                 canSendMessage = false;
                 setTimeout(() => {
@@ -123,6 +140,10 @@
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
+
+        usernameInput.addEventListener('change', function() {
+            username = this.value;
+        });
     </script>
 </body>
 </html>
