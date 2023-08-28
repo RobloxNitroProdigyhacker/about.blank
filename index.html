@@ -1,171 +1,104 @@
+-- New Code!!!
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>about|blank</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #111111;
-        }
-        .chat-container {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-        }
-        .chat-box {
-            background-color: #1a1a1a;
-            border-radius: 5px;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-        }
-        .message {
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            max-width: 80%;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .user-message {
-            align-self: flex-end;
-            background-color: #1f1f1f;
-        }
-        .bot-message {
-            align-self: flex-start;
-            background-color: #1f1f1f;
-        }
-        .message-box {
-            display: flex;
-            margin-top: 10px;
-        }
-        #usernameInput {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #111111;
-            color: #ffffff;
-            width: 100%;
-            max-width: 150px;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #111111;
-            color: #ffffff;
-        }
-        #sendButton {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Chat</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  .chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .chat-box {
+    height: 400px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+  .message {
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  .user-message {
+    background-color: #b2dffc;
+    align-self: flex-end;
+  }
+  .input-box {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
 </head>
 <body>
-    <div class="chat-container">
-        <h1 id="welcome">Welcome To the School Live Chat</h1>
-        <div class="chat-box" id="chatBox"></div>
-        <div class="message-box">
-            <input type="text" id="usernameInput" placeholder="Your Username">
-            <input type="text" id="messageInput" placeholder="Send a message">
-            <button id="sendButton">Send</button>
-        </div>
-    </div>
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box"></div>
+    <input class="input-box" id="input-box" type="text" placeholder="Type your message...">
+  </div>
+  
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const inputBox = document.getElementById('input-box');
 
-    <script>
-        const chatBox = document.getElementById('chatBox');
-        const usernameInput = document.getElementById('usernameInput');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const welcomeMessage = document.getElementById('welcome');
-        let canSendMessage = true;
-        let username = '';
+    // Simulated user authentication (replace with actual authentication)
+    const currentUser = { username: 'User123' };
 
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
+    inputBox.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' && inputBox.value.trim() !== '') {
+        const message = inputBox.value.trim();
+        sendMessage(message);
+        inputBox.value = '';
+      }
+    });
 
-        function sendMessage() {
-            if (!canSendMessage) {
-                return;
-            }
+    function sendMessage(message) {
+      const messageElement = createMessageElement(currentUser.username, message, true);
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-            if (!username) {
-                alert('Please enter a username.');
-                return;
-            }
+    function receiveMessage(sender, message) {
+      const messageElement = createMessageElement(sender, message, false);
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-            const message = messageInput.value.trim();
-            if (message !== '') {
-                appendMessage(username + ': ' + message, 'user');
-                messageInput.value = '';
-                canSendMessage = false;
-                setTimeout(() => {
-                    canSendMessage = true;
-                }, 5000);
-                simulateBotResponse(message);
-            }
-        }
+    function createMessageElement(sender, message, isCurrentUser) {
+      const messageContainer = document.createElement('div');
+      messageContainer.classList.add('message');
+      if (isCurrentUser) {
+        messageContainer.classList.add('user-message');
+      }
 
-        function simulateBotResponse(userMessage) {
-            // Simulate a bot response (replace with actual logic)
-            const botResponse = `You said: "${userMessage}"`;
-            appendMessage(botResponse, 'bot');
-        }
+      const senderElement = document.createElement('div');
+      senderElement.textContent = sender;
+      senderElement.classList.add('sender');
+      messageContainer.appendChild(senderElement);
 
-        function appendMessage(message, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender + '-message');
-            messageDiv.innerText = message;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+      const messageContent = document.createElement('div');
+      messageContent.textContent = message;
+      messageContainer.appendChild(messageContent);
 
-            <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Chat</title>
-</head>
-<body>
-    <script>
-        function saveChat(message) {
-            const savedChat = localStorage.getItem('savedChat') || '';
-            localStorage.setItem('savedChat', savedChat + '\n' + message);
-        }
+      return messageContainer;
+    }
 
-        // Example of saving a chat message
-        const messageToSave = "This is a test message.";
-        saveChat(messageToSave);
-
-        // Retrieve the saved chat messages
-        const savedChat = localStorage.getItem('savedChat');
-        console.log(savedChat);
-        }
-
-        usernameInput.addEventListener('change', function() {
-            username = this.value;
-        });
-    </script>
+    // Simulated incoming message (replace with actual WebSocket handling)
+    setTimeout(() => {
+      receiveMessage('Friend456', 'Hello there!');
+    }, 2000);
+  </script>
 </body>
 </html>
