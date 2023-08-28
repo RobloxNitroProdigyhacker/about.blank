@@ -14,7 +14,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f2f2f2;
-            transition: background-color 0.5s;
+            transition: background-color 0.3s ease-in-out;
         }
         .chat-container {
             background-color: #ffffff;
@@ -23,7 +23,7 @@
             width: 100%;
             max-width: 600px;
             padding: 20px;
-            transition: background-color 0.5s;
+            transition: background-color 0.3s ease-in-out;
         }
         .chat-box {
             background-color: #f2f2f2;
@@ -69,45 +69,50 @@
             margin-top: 10px;
             display: flex;
             align-items: center;
+            cursor: pointer;
         }
         #themeToggle label {
             margin-right: 10px;
+        }
+        .rules {
+            display: none;
+            margin-top: 10px;
             cursor: pointer;
-        }
-        #welcomeMessage {
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        #rulesList {
-            margin-top: 20px;
         }
         .dark-theme {
             background-color: #333333;
             color: #ffffff;
         }
-        .dark-theme .chat-container {
-            background-color: #444444;
+        .dark-theme .rules {
+            color: #ffffff;
+        }
+        .dark-theme #themeToggle label {
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <div id="welcomeMessage">Welcome to the School Live Chat</div>
-        <div id="chatBox" class="chat-box"></div>
+        <div class="chat-box" id="chatBox"></div>
         <div class="message-box">
             <input type="text" id="messageInput" placeholder="Send a message">
             <button id="sendButton">Send</button>
         </div>
-        <div id="themeToggle">
-            <label for="toggle" id="toggleLabel">Dark Theme</label>
+        <div id="themeToggle" onclick="toggleTheme()">
+            <label for="toggle">Dark Theme</label>
             <input type="checkbox" id="toggle">
         </div>
-        <ul id="rulesList">
-            <li>Be respectful to others</li>
-            <li>No spamming or self-promotion</li>
-            <li>Keep discussions school-related</li>
-        </ul>
+        <div id="welcomeMessage" class="rules">
+            Welcome to the School Live Chat!
+        </div>
+        <div id="rulesList" class="rules">
+            <p>Rules:</p>
+            <ul>
+                <li>Be respectful to others.</li>
+                <li>No spamming or advertising.</li>
+                <li>Keep the conversation school-related.</li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -115,7 +120,8 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const themeToggle = document.getElementById('toggle');
-        const toggleLabel = document.getElementById('toggleLabel');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const rulesList = document.getElementById('rulesList');
         let canSendMessage = true;
         let isFirstTime = true;
 
@@ -126,22 +132,18 @@
             }
         });
 
-        themeToggle.addEventListener('change', function() {
-            document.body.classList.toggle('dark-theme', this.checked);
-            toggleLabel.innerText = this.checked ? 'Light Theme' : 'Dark Theme';
-        });
-
         function sendMessage() {
             if (!canSendMessage) {
                 return;
             }
 
+            if (isFirstTime) {
+                welcomeMessage.style.display = 'none';
+                isFirstTime = false;
+            }
+
             const message = messageInput.value.trim();
             if (message !== '') {
-                if (isFirstTime) {
-                    appendMessage('Welcome to the School Live Chat', 'bot');
-                    isFirstTime = false;
-                }
                 appendMessage(message, 'user');
                 messageInput.value = '';
                 canSendMessage = false;
@@ -164,6 +166,16 @@
             messageDiv.innerText = message;
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-theme');
+            themeToggle.textContent = body.classList.contains('dark-theme') ? 'Light Theme' : 'Dark Theme';
+        }
+
+        function toggleRules() {
+            rulesList.style.display = rulesList.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
