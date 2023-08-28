@@ -5,68 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Chat</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #111111;
-        }
-        .chat-container {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-        }
-        .chat-box {
-            background-color: #1a1a1a;
-            border-radius: 5px;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-        }
-        .message {
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            max-width: 80%;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .user-message {
-            align-self: flex-end;
-            background-color: #1f1f1f;
-        }
-        .bot-message {
-            align-self: flex-start;
-            background-color: #1f1f1f;
-        }
-        .message-box {
-            display: flex;
-            margin-top: 10px;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #111111;
-            color: #ffffff;
-        }
-        #sendButton {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        /* ... (previous styles) ... */
     </style>
 </head>
 <body>
@@ -74,6 +13,7 @@
         <h1 id="welcome">Welcome To the School Live Chat</h1>
         <div class="chat-box" id="chatBox"></div>
         <div class="message-box">
+            <input type="text" id="usernameInput" placeholder="Your Username">
             <input type="text" id="messageInput" placeholder="Send a message">
             <button id="sendButton">Send</button>
         </div>
@@ -81,10 +21,14 @@
 
     <script>
         const chatBox = document.getElementById('chatBox');
+        const usernameInput = document.getElementById('usernameInput');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const welcomeMessage = document.getElementById('welcome');
         let canSendMessage = true;
+        let username = localStorage.getItem('username') || '';
+        let totalWords = 0;
+        const wordLimit = 250000;
 
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keyup', function(event) {
@@ -98,9 +42,19 @@
                 return;
             }
 
+            if (!username) {
+                alert('Please enter a username.');
+                return;
+            }
+
             const message = messageInput.value.trim();
             if (message !== '') {
-                appendMessage(message, 'user');
+                totalWords += message.split(/\s+/).length;
+                if (totalWords > wordLimit) {
+                    clearChat();
+                }
+
+                appendMessage(username + ': ' + message, 'user');
                 messageInput.value = '';
                 canSendMessage = false;
                 setTimeout(() => {
@@ -123,7 +77,20 @@
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
+
+        function clearChat() {
+            chatBox.innerHTML = '';
+            totalWords = 0;
+        }
+
+        usernameInput.addEventListener('change', function() {
+            username = this.value;
+            localStorage.setItem('username', username);
+        });
+
+        if (username) {
+            usernameInput.value = username;
+        }
     </script>
 </body>
 </html>
-
