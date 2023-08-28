@@ -102,24 +102,18 @@
         const themeToggle = document.getElementById('toggle');
         let canSendMessage = true;
 
-        // Welcome message on page load
-        appendMessage('Welcome To the School Live chat', 'bot');
+        function appendMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerText = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        themeToggle.addEventListener('change', function() {
-            document.body.classList.toggle('dark-theme', this.checked);
-            sendButton.innerText = this.checked ? 'Light Theme' : 'Dark Theme';
-            setTimeout(() => {
-                sendButton.innerText = this.checked ? 'Light Theme' : 'Dark Theme';
-                document.body.classList.toggle('dark-theme', !this.checked);
-            }, 500);
-        });
+        function simulateBotResponse(userMessage) {
+            const botResponse = `You said: "${userMessage}"`;
+            appendMessage(botResponse, 'bot');
+        }
 
         function sendMessage() {
             if (!canSendMessage) {
@@ -138,19 +132,23 @@
             }
         }
 
-        function simulateBotResponse(userMessage) {
-            // Simulate a bot response (replace with actual logic)
-            const botResponse = `You said: "${userMessage}"`;
-            appendMessage(botResponse, 'bot');
-        }
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
 
-        function appendMessage(message, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender + '-message');
-            messageDiv.innerText = message;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-theme', themeToggle.checked);
+            sendButton.innerText = themeToggle.checked ? 'Light Theme' : 'Dark Theme';
+            setTimeout(() => {
+                sendButton.innerText = themeToggle.checked ? 'Light Theme' : 'Dark Theme';
+                document.body.classList.toggle('dark-theme', !themeToggle.checked);
+            }, 500);
+        });
+
+        appendMessage('Welcome To the School Live chat', 'bot');
     </script>
 </body>
 </html>
