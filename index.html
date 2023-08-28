@@ -5,7 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Chat</title>
     <style>
-        /* ... Your existing CSS styles ... */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s;
+        }
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+        .chat-box {
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            max-width: 80%;
+            font-size: 14px;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: #e0e0e0;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background-color: #ffffff;
+        }
+        .message-box {
+            display: flex;
+            margin-top: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #sendButton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #themeToggle {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        #themeToggle label {
+            margin-right: 10px;
+        }
+        .dark-theme #themeToggle {
+            color: #ffffff;
+        }
+        .dark-theme {
+            background-color: #242323;
+        }
     </style>
 </head>
 <body>
@@ -16,7 +91,7 @@
             <button id="sendButton">Send</button>
         </div>
         <div id="themeToggle">
-            <label for="toggle">Toggle Theme:</label>
+            <label for="toggle">Toggle Theme</label>
             <input type="checkbox" id="toggle">
         </div>
     </div>
@@ -26,56 +101,19 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const themeToggle = document.getElementById('toggle');
-        const warningMessage = document.createElement('div');
+        let canSendMessage = true;
 
-        // Check if the user has left the chat previously
-        const hasLeftChat = localStorage.getItem('hasLeftChat');
-        if (hasLeftChat) {
-            showWarningMessage();
-        }
-
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        themeToggle.addEventListener('change', function() {
-            document.body.classList.toggle('dark-theme', this.checked);
-            themeToggle.disabled = true;
+        // Theme toggle
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-theme');
+            themeToggle.classList.add('fade-out');
             setTimeout(() => {
-                themeToggle.disabled = false;
-                themeToggle.nextSibling.textContent = this.checked ? 'Light Theme:' : 'Dark Theme:';
-            }, 500);
+                themeToggle.textContent = document.body.classList.contains('dark-theme') ? 'Light Theme' : 'Dark Theme';
+                themeToggle.classList.remove('fade-out');
+            }, 300);
         });
 
-        function sendMessage() {
-            // ... Your existing sendMessage logic ...
-
-            // Remove the warning message if visible
-            removeWarningMessage();
-        }
-
-        function showWarningMessage() {
-            warningMessage.textContent = 'Warning: Since you have left the chat, the messages have been wiped.';
-            warningMessage.style.color = 'yellow';
-            warningMessage.style.position = 'absolute';
-            warningMessage.style.top = '20px';
-            warningMessage.style.left = '50%';
-            warningMessage.style.transform = 'translateX(-50%)';
-            document.body.appendChild(warningMessage);
-            setTimeout(removeWarningMessage, 5000);
-        }
-
-        function removeWarningMessage() {
-            if (warningMessage.parentElement) {
-                document.body.removeChild(warningMessage);
-                localStorage.removeItem('hasLeftChat');
-            }
-        }
-
-        // ... The rest of your JavaScript code ...
+        // ... Rest of the JavaScript code for the chat functionality ...
     </script>
 </body>
 </html>
